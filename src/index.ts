@@ -99,11 +99,11 @@ class LessOtp {
   /**
    * Verifies the OTP by comparing it with the decrypted OTP hash.
    * @param {string} id - Unique identifier.
-   * @param {string} data - Data to verify.
+   * @param {string} submitted - Submitted OTP to verify.
    * @param {string} hash - Encrypted OTP hash.
    * @returns {boolean} - Whether the OTP is valid.
    */
-  public verify(id: string, hash: string, data: Data): boolean {
+  public verify(id: string, hash: string, submitted: string): boolean {
     const { otp, expiresAt } = this.decryptOtp(hash, id);
 
     // Check if the OTP is valid based on expiration
@@ -111,7 +111,7 @@ class LessOtp {
       return false;
     }
 
-    return otp === data.otp;
+    return otp === submitted;
   }
 
   /**

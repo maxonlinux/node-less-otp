@@ -1,7 +1,9 @@
 # node-less-otp
- A super lightweight Node.js library for generating and verifying one-time passwords (OTPs) without the database interaction and additional dependencies.
+
+A super lightweight Node.js stateless authentication library for generating and verifying one-time passwords (OTPs) without the database interaction and additional dependencies.
 
 ## Table of Contents
+
 - [Installation](#installation)
 - [Usage](#usage)
 - [API Documentation](#api-documentation)
@@ -27,12 +29,12 @@ npm install node-less-otp
 To use the `node-less-otp` library, import the class and create an instance by passing your configuration. You can then generate and verify OTPs.
 
 ```javascript
-import LessOtp from 'node-less-otp';
+import LessOtp from "node-less-otp";
 
 const otp = new LessOtp({
-  secretSalt: 'your_secret_salt',   // Required
-  algorithm: 'aes-256-cbc',         // Optional
-  ivLength: 16                      // Optional
+  secretSalt: "your_secret_salt", // Required
+  algorithm: "aes-256-cbc", // Optional
+  ivLength: 16, // Optional
 });
 ```
 
@@ -46,20 +48,20 @@ const otp = new LessOtp({
 
 The configuration for the `LessOtp` instance:
 
-| Parameter     | Type   | Description                                      |
-|---------------|--------|--------------------------------------------------|
-| `secretSalt`  | string | Mandatory secret salt used for encryption.      |
-| `algorithm`   | string | Optional encryption algorithm (default: 'aes-256-cbc'). |
-| `ivLength`    | number | Optional initialization vector length (default: 16). |
+| Parameter    | Type   | Description                                             |
+| ------------ | ------ | ------------------------------------------------------- |
+| `secretSalt` | string | Mandatory secret salt used for encryption.              |
+| `algorithm`  | string | Optional encryption algorithm (default: 'aes-256-cbc'). |
+| `ivLength`   | number | Optional initialization vector length (default: 16).    |
 
 ### GenerateOptions
 
 Options for OTP generation:
 
-| Parameter     | Type        | Description                                      |
-|---------------|-------------|--------------------------------------------------|
-| `template`    | string      | Optional template for OTP generation (see examples). |
-| `ttl`         | number      | Optional time-to-live in seconds for the generated OTP (default: Infinity). |
+| Parameter  | Type   | Description                                                                 |
+| ---------- | ------ | --------------------------------------------------------------------------- |
+| `template` | string | Optional template for OTP generation (see examples).                        |
+| `ttl`      | number | Optional time-to-live in seconds for the generated OTP (default: Infinity). |
 
 ### LessOtp Class
 
@@ -73,15 +75,16 @@ const otp = new LessOtp(config: LessOtpConfig);
 
 #### gen
 
-Generates an OTP based on a unique identifier and optional generation options.
+Generates an OTP based on a unique identifier and generation options.
 
 ```javascript
 const { otp, hash } = await otp.gen(id: string, options: GenerateOptions);
 ```
 
 - **Parameters**:
-  - `id`: Unique identifier (e.g., phone number, email).
-  - `options`: Optional generation options.
+
+  - `id`: Unique identifier (e.g., phone number, email, username).
+  - `options`: Generation options.
 
 - **Returns**: An object containing the generated OTP and its encrypted hash.
 
@@ -90,24 +93,25 @@ const { otp, hash } = await otp.gen(id: string, options: GenerateOptions);
 Verifies the OTP by comparing it with the decrypted OTP hash.
 
 ```javascript
-const isValid = otp.verify(id: string, hash: string, data: Data);
+const isValid = otp.verify(id: string, hash: string, submitted: string);
 ```
 
 - **Parameters**:
+
   - `id`: Unique identifier.
   - `hash`: Encrypted OTP hash.
-  - `data`: Data object containing the OTP to verify.
+  - `submitted`: Submitted OTP to verify.
 
 - **Returns**: `true` if the OTP is valid; otherwise, `false`.
 
 ### Data
 
-The data returned after generating an OTP:
+The data returned after generating an OTP (internal type, you can ignore it in this context):
 
-| Parameter  | Type     | Description                               |
-|------------|----------|-------------------------------------------|
-| `otp`      | string   | The generated OTP.                        |
-| `expiresAt`| number   | Timestamp indicating when the OTP expires. |
+| Parameter   | Type   | Description                                |
+| ----------- | ------ | ------------------------------------------ |
+| `otp`       | string | The generated OTP.                         |
+| `expiresAt` | number | Timestamp indicating when the OTP expires. |
 
 ## Examples
 
@@ -116,56 +120,54 @@ The data returned after generating an OTP:
 #### Example 1: Numeric OTP
 
 ```javascript
-const otp = new LessOtp({ secretSalt: 'your_secret_salt' });
+const otp = new LessOtp({ secretSalt: "your_secret_salt" });
 
-async function generateNumericOtp() {
-  const { otp: generatedOtp, hash } = await otp.gen('user@example.com', { template: 'N{6}', ttl: 300 });
-  console.log('Generated Numeric OTP:', generatedOtp); // e.g., 491945
-  console.log('Encrypted Hash:', hash);
-}
-generateNumericOtp();
+  const { otp: generatedOtp, hash } = await otp.gen("user@example.com", {
+    template: "N{6}",
+    ttl: 300,
+  });
+  console.log("Generated Numeric OTP:", generatedOtp); // e.g., 491945
+  console.log("Encrypted Hash:", hash);
 ```
 
 #### Example 2: Alphanumeric OTP
 
 ```javascript
-async function generateAlphanumericOtp() {
-  const { otp: generatedOtp, hash } = await otp.gen('user@example.com', { template: 'A{8}', ttl: 300 });
-  console.log('Generated Alphanumeric OTP:', generatedOtp); // e.g., 1aB2cD3e
-  console.log('Encrypted Hash:', hash);
-}
-generateAlphanumericOtp();
+  const { otp: generatedOtp, hash } = await otp.gen("user@example.com", {
+    template: "A{8}",
+    ttl: 300,
+  });
+  console.log("Generated Alphanumeric OTP:", generatedOtp); // e.g., 1aB2cD3e
+  console.log("Encrypted Hash:", hash);
 ```
 
 #### Example 3: Mixed-case Letters with Numbers
 
 ```javascript
-async function generateMixedCaseOtp() {
-  const { otp: generatedOtp, hash } = await otp.gen('user@example.com', { template: 'M{4}-N{2}', ttl: 300 });
-  console.log('Generated Mixed-case OTP:', generatedOtp); // e.g., AbcD-12
-  console.log('Encrypted Hash:', hash);
-}
-generateMixedCaseOtp();
+  const { otp: generatedOtp, hash } = await otp.gen("user@example.com", {
+    template: "M{4}-N{2}",
+    ttl: 300,
+  });
+  console.log("Generated Mixed-case OTP:", generatedOtp); // e.g., AbcD-12
+  console.log("Encrypted Hash:", hash);
 ```
 
 #### Example 4: Custom Template
 
 ```javascript
-async function generateCustomOtp() {
-  const { otp: generatedOtp, hash } = await otp.gen('user@example.com', { template: 'N{2}-M{3}-U{2}', ttl: 300 });
-  console.log('Generated Custom OTP:', generatedOtp); // e.g., 12-abc-XY
-  console.log('Encrypted Hash:', hash);
-}
-generateCustomOtp();
+const { otp: generatedOtp, hash } = await otp.gen("user@example.com", {
+  template: "N{2}-M{3}-U{2}",
+  ttl: 300,
+});
+console.log("Generated Custom OTP:", generatedOtp); // e.g., 12-abc-XY
+console.log("Encrypted Hash:", hash);
 ```
 
 ### Verifying an OTP
 
 ```javascript
-async function verifyOtp(generatedOtp, hash) {
-  const isValid = otp.verify('user@example.com', hash, { otp: generatedOtp });
-  console.log('Is OTP valid?', isValid);
-}
+const isValid = otp.verify("user@example.com", hash, "832-059");
+console.log("Is OTP valid?", isValid);
 ```
 
 ## License
