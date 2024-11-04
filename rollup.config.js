@@ -8,18 +8,18 @@ export default {
         {
             file: 'dist/index.cjs.js',          // CommonJS format
             format: 'cjs',
-            sourcemap: true,
+            // sourcemap: true,
         },
         {
             file: 'dist/index.esm.js',          // ES Module format
             format: 'es',
-            sourcemap: true,
+            // sourcemap: true,
         },
         {
             file: 'dist/index.umd.js',          // UMD format for wider compatibility
             format: 'umd',
             name: 'LessOtp',                    // Global variable name for UMD
-            sourcemap: true,
+            // sourcemap: true,
             globals: {
                 crypto: 'crypto'
             }
