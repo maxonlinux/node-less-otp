@@ -20,11 +20,15 @@ export default {
             format: 'umd',
             name: 'LessOtp',                    // Global variable name for UMD
             sourcemap: true,
+            globals: {
+                crypto: 'crypto'
+            }
         }
     ],
     plugins: [
         resolve(),                              // Helps Rollup find external modules
         commonjs(),                             // Converts CommonJS modules to ES6
         typescript()                            // Compile TypeScript
-    ]
+    ],
+    external: ['crypto']
 };

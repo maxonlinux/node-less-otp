@@ -162,4 +162,4 @@ class LessOtp {
   }
 }
 
-export default LessOtp;
+export { LessOtp };
