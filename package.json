@@ -1,0 +1,58 @@
+{
+  "name": "node-less-otp",
+  "version": "0.0.1",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "umd:main": "dist/index.umd.js",
+  "scripts": {
+    "build": "rollup -c",
+    "prepare": "npm run build",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "author": "Maksym Motoman",
+  "license": "ISC",
+  "description": "A super lightweight library for generating and verifying one-time passwords (OTPs) without the database interaction and additional dependencies.",
+  "keywords": [
+    "node",
+    "less",
+    "less-otp",
+    "node-less-otp",
+    "otp",
+    "auth",
+    "2fa",
+    "totp",
+    "hotp",
+    "security",
+    "stateless",
+    "stateless-auth",
+    "stateless-authorization",
+    "stateless-authentication",
+    "stateless-authorization-code",
+    "passwordless",
+    "passwordless-auth",
+    "passwordless-authorization",
+    "passwordless-authentication",
+    "passwordless-authorization-code",
+    "password-less",
+    "authentication",
+    "authorization",
+    "one-time password"
+  ],
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
+  "devDependencies": {
+    "@rollup/plugin-commonjs": ">=28.0.1",
+    "@rollup/plugin-node-resolve": ">=15.3.0",
+    "@rollup/plugin-typescript": "^12.1.1",
+    "@types/node": ">=12.0.0",
+    "rollup": ">=2.0.0",
+    "ts-node": ">=10.0.0",
+    "typescript": ">=4.0.0"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  }
+}
