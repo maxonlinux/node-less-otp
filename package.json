@@ -10,7 +10,7 @@
     "test": "echo \"No tests specified\" && exit 0"
   },
   "author": "Maksym Motoman",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "description": "A super lightweight library for generating and verifying one-time passwords (OTPs) without the database interaction and additional dependencies.",
   "keywords": [
     "node",
@@ -38,6 +38,10 @@
     "authorization",
     "one-time password"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maxonlinux/node-less-otp.git"
+  },
   "files": [
     "dist/",
     "README.md",
