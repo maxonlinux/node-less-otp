@@ -109,25 +109,59 @@ The data returned after generating an OTP:
 
 ### Generating an OTP
 
+#### Example 1: Numeric OTP
+
 ```javascript
 const otp = new LessOtp({ secretSalt: 'your_secret_salt' });
 
-async function generateOtp() {
+async function generateNumericOtp() {
   const { otp: generatedOtp, hash } = await otp.gen('user@example.com', { template: 'N{6}', ttl: 300 });
-  console.log('Generated OTP:', generatedOtp);
+  console.log('Generated Numeric OTP:', generatedOtp); // e.g., 491945
   console.log('Encrypted Hash:', hash);
 }
-generateOtp();
+generateNumericOtp();
+```
+
+#### Example 2: Alphanumeric OTP
+
+```javascript
+async function generateAlphanumericOtp() {
+  const { otp: generatedOtp, hash } = await otp.gen('user@example.com', { template: 'A{8}', ttl: 300 });
+  console.log('Generated Alphanumeric OTP:', generatedOtp); // e.g., 1aB2cD3e
+  console.log('Encrypted Hash:', hash);
+}
+generateAlphanumericOtp();
+```
+
+#### Example 3: Mixed-case Letters with Numbers
+
+```javascript
+async function generateMixedCaseOtp() {
+  const { otp: generatedOtp, hash } = await otp.gen('user@example.com', { template: 'M{4}-N{2}', ttl: 300 });
+  console.log('Generated Mixed-case OTP:', generatedOtp); // e.g., AbcD-12
+  console.log('Encrypted Hash:', hash);
+}
+generateMixedCaseOtp();
+```
+
+#### Example 4: Custom Template
+
+```javascript
+async function generateCustomOtp() {
+  const { otp: generatedOtp, hash } = await otp.gen('user@example.com', { template: 'N{2}-M{3}-U{2}', ttl: 300 });
+  console.log('Generated Custom OTP:', generatedOtp); // e.g., 12-abc-XY
+  console.log('Encrypted Hash:', hash);
+}
+generateCustomOtp();
 ```
 
 ### Verifying an OTP
 
 ```javascript
-async function verifyOtp() {
+async function verifyOtp(generatedOtp, hash) {
   const isValid = otp.verify('user@example.com', hash, { otp: generatedOtp });
   console.log('Is OTP valid?', isValid);
 }
-verifyOtp();
 ```
 
 ## License
