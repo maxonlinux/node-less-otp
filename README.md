@@ -38,6 +38,10 @@ const otp = new LessOtp({
 
 ## API Documentation
 
+### Example Use Case
+
+![Diagram](https://raw.githubusercontent.com/maxonlinux/node-less-otp/refs/heads/main/diagram.png)
+
 ### LessOtpConfig
 
 The configuration for the `LessOtp` instance:
