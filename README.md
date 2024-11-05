@@ -257,6 +257,10 @@ app.listen(PORT, () => {
 
 ## Changelog
 
+### [0.0.8] - 2024-11-05
+
+Minor fix
+
 ### [0.0.7] - 2024-11-05
 
 Fixed: Types and exports
