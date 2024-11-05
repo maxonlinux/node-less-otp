@@ -1,16 +1,17 @@
 {
   "compilerOptions": {
-    "target": "es5",                          // Target ECMAScript 5
-    "module": "esnext",                       // Use ESNext module syntax
-    "lib": ["es5", "es2015", "dom"],          // Include libraries for ES5 and DOM
-    "outDir": "dist",                         // Output directory for compiled files
-    "rootDir": "src",                         // Root directory of source files
-    "strict": true,                           // Enable all strict type-checking options
-    "esModuleInterop": true,                  // Enable interoperability between CommonJS and ES Modules
-    "skipLibCheck": true,                     // Skip type checking of declaration files
+    "target": "ESNext", // Output ESNext; Babel will handle compatibility
+    "module": "ESNext", // Modules as ESNext; Rollup will handle bundling
+    "lib": ["es5", "es2015", "dom"], // Support ES5, ES2015, and DOM for compatibility
+    "outDir": "dist", // Output directory for compiled files
+    "rootDir": "src", // Root directory of source files
+    "strict": true, // Enable strict type-checking options
+    "esModuleInterop": true, // Allow compatibility between CommonJS and ES modules
+    "skipLibCheck": true, // Skip type-checking of declaration files for faster builds
     "forceConsistentCasingInFileNames": true, // Ensure consistent file casing
-    "moduleResolution": "node",               // 
+    "moduleResolution": "node", // Node module resolution
+    "declaration": true // Generate .d.ts files for type definitions
   },
-  "include": ["src/**/*"],                    // Include all TypeScript files in src
-  "exclude": ["node_modules", "dist"]         // Exclude node_modules and dist directories
+  "include": ["src/**/*"], // Include all files in src directory
+  "exclude": ["node_modules", "dist"] // Exclude node_modules and dist directories
 }

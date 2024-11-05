@@ -1,9 +1,11 @@
-const resolve = require('@rollup/plugin-node-resolve');
-const commonjs = require('@rollup/plugin-commonjs');
-const typescript = require('@rollup/plugin-typescript');
-const nodePolyfills = require('rollup-plugin-polyfill-node');
+import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import typescript from '@rollup/plugin-typescript';
+import babel from '@rollup/plugin-babel';
+import terser from '@rollup/plugin-terser';
 
-module.exports = {
+
+export default {
     input: 'src/index.ts',                      // Entry point of your library
     output: [
         {
@@ -26,13 +28,15 @@ module.exports = {
             }
         }
     ],
+    treeshake: true,
     plugins: [
+        terser(),                               // Minify code
         resolve(),                              // Helps Rollup find external modules
         commonjs(),                             // Converts CommonJS modules to ES6
         typescript(),                           // Compile TypeScript
-        nodePolyfills({
-            include: ['crypto']
-
+        babel({                                 // Babel
+            babelHelpers: 'bundled',
+            extensions: ['.ts', '.js']
         })
     ]
 };
