@@ -5,6 +5,10 @@
   "module": "dist/index.esm.js",
   "umd:main": "dist/index.umd.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    "require": "./dist/index.cjs.js",
+    "import": "./dist/index.esm.js"
+  },
   "type": "module",
   "scripts": {
     "build": "rollup -c",

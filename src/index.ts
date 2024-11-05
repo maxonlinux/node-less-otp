@@ -73,7 +73,7 @@ class LessOtp {
   private enableSet: boolean;
   private hashSet: Set<string> = new Set();
 
-  constructor(config: LessOtpConfig) {
+  constructor(config: LessOtpConfig = {}) {
     this.secretSalt = config.secretSalt || generateSecret();
     this.algorithm = config.algorithm || DEFAULT_ALGORITHM;
     this.ivLength = config.ivLength || DEFAULT_IV_LENGTH;

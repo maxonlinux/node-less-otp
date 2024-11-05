@@ -257,9 +257,21 @@ app.listen(PORT, () => {
 
 ## Changelog
 
+### [0.0.7] - 2024-11-05
+
+Fixed: Types and exports
+
+Updated: package.json
+
+### [0.0.6] - 2024-11-05
+
+Added: Babel transpiler and Rollup Terser plugin to reduce dist size.
+
+Updated: README.md
+
 ### [0.0.5] - 2024-11-05
 
-Added: Tests using Vitest.
+Added: Unit tests using Vitest.
 
 Added: New enableSet flag in the class constructor to control whether OTPs should be stored in a hash set, ensuring that each OTP can only be used once (defaults to true).
 
