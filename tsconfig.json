@@ -8,7 +8,8 @@
     "strict": true,                           // Enable all strict type-checking options
     "esModuleInterop": true,                  // Enable interoperability between CommonJS and ES Modules
     "skipLibCheck": true,                     // Skip type checking of declaration files
-    "forceConsistentCasingInFileNames": true  // Ensure consistent file casing
+    "forceConsistentCasingInFileNames": true, // Ensure consistent file casing
+    "moduleResolution": "node",               // 
   },
   "include": ["src/**/*"],                    // Include all TypeScript files in src
   "exclude": ["node_modules", "dist"]         // Exclude node_modules and dist directories

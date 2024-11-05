@@ -1,24 +1,31 @@
 import crypto from "crypto";
-import { generateOtp } from "./utils";
+import { generateOtp, generateSecret } from "./utils";
 
 // Constants for encryption
 const DEFAULT_ALGORITHM = "aes-256-cbc";
 const DEFAULT_IV_LENGTH = 16;
 
-type LessOtpConfig = {
-  /** Mandatory secret salt used for encryption. */
-  secretSalt: string;
+// Other defaults
+const DEFAULT_ENABLE_SET = true;
+const DEFAULT_TEMPLATE = "N{6}";
 
-  /** Optional encryption algorithm (default is 'aes-256-cbc') */
+type LessOtpConfig = {
+  /** Secret salt used for encryption (if not specified, the random key will be generated) */
+  secretSalt?: string;
+
+  /** Encryption algorithm (default is 'aes-256-cbc') */
   algorithm?: string;
 
-  /** Optional initialization vector length (default is 16) */
+  /** Initialization vector length (default is 16) */
   ivLength?: number;
+
+  /** Flag to indicate if the OTP hash set should be enabled to ensure that each OTP is only used once. Defaults to true (setting it to false is not recommended) */
+  enableSet?: boolean;
 };
 
 type GenerateOptions = {
   /**
-   * Optional template for OTP generation using a structured string format (defaults to 6 random digits e.g. 491945):
+   * Template for OTP generation using a structured string format (defaults to 6 random digits e.g. 491945):
    * - 'N' for numeric (0-9)
    * - 'L' for lowercase letters (a-z)
    * - 'U' for uppercase letters (A-Z)
@@ -50,7 +57,7 @@ type GenerateOptions = {
    */
   template?: string;
 
-  /** Optional time-to-live in seconds for the generated OTP. Defaults to Infinity (unlimited) (not recommended) */
+  /** Time-to-live in seconds for the generated OTP. Defaults to Infinity (unlimited) (not recommended) */
   ttl?: number;
 };
 
@@ -63,11 +70,14 @@ class LessOtp {
   private secretSalt: string;
   private algorithm: string;
   private ivLength: number;
+  private enableSet: boolean;
+  private hashSet: Set<string> = new Set();
 
   constructor(config: LessOtpConfig) {
-    this.secretSalt = config.secretSalt;
+    this.secretSalt = config.secretSalt || generateSecret();
     this.algorithm = config.algorithm || DEFAULT_ALGORITHM;
     this.ivLength = config.ivLength || DEFAULT_IV_LENGTH;
+    this.enableSet = config.enableSet ?? DEFAULT_ENABLE_SET;
   }
 
   /**
@@ -80,8 +90,9 @@ class LessOtp {
     id: string,
     options: GenerateOptions = {}
   ): Promise<{ otp: string; hash: string }> {
-    const otp = generateOtp(options.template);
+    const template = options.template || DEFAULT_TEMPLATE;
 
+    const otp = generateOtp(template);
     const expiresAt = options.ttl ? Date.now() + options.ttl * 1000 : Infinity; // Infinity for unlimited TTL
 
     // Stringified object with OTP and expiration to be encripted
@@ -90,8 +101,11 @@ class LessOtp {
       expiresAt,
     });
 
-    // Encrypt OTP data
     const hash = this.encryptOtp(id, data);
+
+    if (this.enableSet) {
+      this.hashSet.add(hash);
+    }
 
     return { otp, hash };
   }
@@ -104,14 +118,28 @@ class LessOtp {
    * @returns {boolean} - Whether the OTP is valid.
    */
   public verify(id: string, hash: string, submitted: string): boolean {
-    const { otp, expiresAt } = this.decryptOtp(hash, id);
+    try {
+      const { otp, expiresAt } = this.decryptOtp(hash, id);
 
-    // Check if the OTP is valid based on expiration
-    if (Date.now() > expiresAt) {
+      // If set is enabled and does not have this OTP hash, it means user is trying to use it for the second time, so we return false
+      const isUsed = this.enableSet && !this.hashSet.has(hash);
+      const isExpired = expiresAt < Date.now();
+
+      if (isUsed || isExpired) {
+        return false;
+      }
+
+      const isVerified = otp === submitted;
+
+      if (isVerified) {
+        this.hashSet.delete(hash);
+      }
+
+      return isVerified;
+    } catch (error) {
+      console.error(error);
       return false;
     }
-
-    return otp === submitted;
   }
 
   /**

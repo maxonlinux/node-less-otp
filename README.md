@@ -32,9 +32,10 @@ To use the `node-less-otp` library, import the class and create an instance by p
 import LessOtp from "node-less-otp";
 
 const otp = new LessOtp({
-  secretSalt: "your_secret_salt", // Required
+  secretSalt: "your_secret_salt", // Optional
   algorithm: "aes-256-cbc", // Optional
   ivLength: 16, // Optional
+  enableSet: false, // Optional, not recommended (default: true)
 });
 ```
 
@@ -48,11 +49,12 @@ const otp = new LessOtp({
 
 The configuration for the `LessOtp` instance:
 
-| Parameter    | Type   | Description                                             |
-| ------------ | ------ | ------------------------------------------------------- |
-| `secretSalt` | string | Mandatory secret salt used for encryption.              |
-| `algorithm`  | string | Optional encryption algorithm (default: 'aes-256-cbc'). |
-| `ivLength`   | number | Optional initialization vector length (default: 16).    |
+| Parameter    | Type    | Description                                                                                                                                                      |
+| ------------ | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `secretSalt` | string  | Optional secret salt used for encryption (if left blank, the random key is generated).                                                                           |
+| `algorithm`  | string  | Optional encryption algorithm (default: 'aes-256-cbc').                                                                                                          |
+| `ivLength`   | number  | Optional initialization vector length (default: 16).                                                                                                             |
+| `enableSet`  | boolean | Optional flag that indicates whether to enable the OTP hash set to ensure each code is only used once (enabled by default, setting to false is not recommended). |
 
 ### GenerateOptions
 
@@ -122,34 +124,34 @@ The data returned after generating an OTP (internal type, you can ignore it in t
 ```javascript
 const otp = new LessOtp({ secretSalt: "your_secret_salt" });
 
-  const { otp: generatedOtp, hash } = await otp.gen("user@example.com", {
-    template: "N{6}",
-    ttl: 300,
-  });
-  console.log("Generated Numeric OTP:", generatedOtp); // e.g., 491945
-  console.log("Encrypted Hash:", hash);
+const { otp: generatedOtp, hash } = await otp.gen("user@example.com", {
+  template: "N{6}",
+  ttl: 300,
+});
+console.log("Generated Numeric OTP:", generatedOtp); // e.g., 491945
+console.log("Encrypted Hash:", hash);
 ```
 
 #### Example 2: Alphanumeric OTP
 
 ```javascript
-  const { otp: generatedOtp, hash } = await otp.gen("user@example.com", {
-    template: "A{8}",
-    ttl: 300,
-  });
-  console.log("Generated Alphanumeric OTP:", generatedOtp); // e.g., 1aB2cD3e
-  console.log("Encrypted Hash:", hash);
+const { otp: generatedOtp, hash } = await otp.gen("user@example.com", {
+  template: "A{8}",
+  ttl: 300,
+});
+console.log("Generated Alphanumeric OTP:", generatedOtp); // e.g., 1aB2cD3e
+console.log("Encrypted Hash:", hash);
 ```
 
 #### Example 3: Mixed-case Letters with Numbers
 
 ```javascript
-  const { otp: generatedOtp, hash } = await otp.gen("user@example.com", {
-    template: "M{4}-N{2}",
-    ttl: 300,
-  });
-  console.log("Generated Mixed-case OTP:", generatedOtp); // e.g., AbcD-12
-  console.log("Encrypted Hash:", hash);
+const { otp: generatedOtp, hash } = await otp.gen("user@example.com", {
+  template: "M{4}-N{2}",
+  ttl: 300,
+});
+console.log("Generated Mixed-case OTP:", generatedOtp); // e.g., AbcD-12
+console.log("Encrypted Hash:", hash);
 ```
 
 #### Example 4: Custom Template
@@ -169,6 +171,26 @@ console.log("Encrypted Hash:", hash);
 const isValid = otp.verify("user@example.com", hash, "832-059");
 console.log("Is OTP valid?", isValid);
 ```
+
+## Changelog
+
+### [0.0.5] - 2024-11-05
+
+Added: Tests using Vitest.
+
+Added: New enableSet flag in the class constructor to control whether OTPs should be stored in a hash set, ensuring that each OTP can only be used once (defaults to true).
+
+Usage: To disable storing OTPs in the hash set (not recommended), set enableSet to false when initializing the class:
+
+```javascript
+const lessOtp = new LessOtp({ enableSet: false });
+```
+
+Updated: `secretSalt` is now optional and, if not provided, will be generated automatically with a random length between 32 and 64 characters (16 to 32 bytes).
+
+Updated: README.md
+
+Code clean up
 
 ## License
 
