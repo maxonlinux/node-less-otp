@@ -1,8 +1,9 @@
-import resolve from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import typescript from '@rollup/plugin-typescript';
+const resolve = require('@rollup/plugin-node-resolve');
+const commonjs = require('@rollup/plugin-commonjs');
+const typescript = require('@rollup/plugin-typescript');
+const nodePolyfills = require('rollup-plugin-polyfill-node');
 
-export default {
+module.exports = {
     input: 'src/index.ts',                      // Entry point of your library
     output: [
         {
@@ -28,7 +29,10 @@ export default {
     plugins: [
         resolve(),                              // Helps Rollup find external modules
         commonjs(),                             // Converts CommonJS modules to ES6
-        typescript()                            // Compile TypeScript
-    ],
-    external: ['crypto']
+        typescript(),                           // Compile TypeScript
+        nodePolyfills({
+            include: ['crypto']
+
+        })
+    ]
 };
