@@ -7,7 +7,8 @@
   "types": "dist/index.d.ts",
   "exports": {
     "require": "./dist/index.cjs.js",
-    "import": "./dist/index.esm.js"
+    "import": "./dist/index.esm.js",
+    "types": "./dist/index.d.ts"
   },
   "type": "module",
   "scripts": {

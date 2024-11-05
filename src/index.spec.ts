@@ -10,25 +10,25 @@ describe("LessOtp", () => {
   });
 
   it("should generate an OTP and corresponding hash", async () => {
-    const { otp, hash } = await lessOtp.gen(id, { template: "N{6}", ttl: 60 });
+    const { otp, hash } = lessOtp.gen(id, { template: "N{6}", ttl: 60 });
     expect(otp).toHaveLength(6);
     expect(hash).toBeDefined();
   });
 
   it("should verify a valid OTP", async () => {
-    const { otp, hash } = await lessOtp.gen(id, { template: "N{6}", ttl: 60 });
+    const { otp, hash } = lessOtp.gen(id, { template: "N{6}", ttl: 60 });
     const isValid = lessOtp.verify(id, hash, otp);
     expect(isValid).toBe(true);
   });
 
   it("should not verify an expired OTP", async () => {
-    const { otp, hash } = await lessOtp.gen(id, { template: "N{6}", ttl: 0 }); // ttl 0 to expire immediately
+    const { otp, hash } = lessOtp.gen(id, { template: "N{6}", ttl: 0 }); // ttl 0 to expire immediately
     const isValid = lessOtp.verify(id, hash, otp);
     expect(isValid).toBe(false);
   });
 
   it("should not verify an OTP that has been used once already", async () => {
-    const { otp, hash } = await lessOtp.gen(id, { template: "N{6}", ttl: 60 });
+    const { otp, hash } = lessOtp.gen(id, { template: "N{6}", ttl: 60 });
     expect(lessOtp.verify(id, hash, otp)).toBe(true); // First usage
     expect(lessOtp.verify(id, hash, otp)).toBe(false); // Second usage should fail
   });
@@ -41,10 +41,10 @@ describe("LessOtp", () => {
   // });
 
   it("should generate OTP of varying lengths according to the template", async () => {
-    const otp4 = await lessOtp.gen(id, { template: "N{4}", ttl: 60 });
+    const otp4 = lessOtp.gen(id, { template: "N{4}", ttl: 60 });
     expect(otp4.otp).toHaveLength(4);
 
-    const otp8 = await lessOtp.gen(id, { template: "N{8}", ttl: 60 });
+    const otp8 = lessOtp.gen(id, { template: "N{8}", ttl: 60 });
     expect(otp8.otp).toHaveLength(8);
   });
 
@@ -55,7 +55,7 @@ describe("LessOtp", () => {
   });
 
   it("should correctly handle template with letters and numbers", async () => {
-    const { otp } = await lessOtp.gen(id, {
+    const { otp } = lessOtp.gen(id, {
       template: "N{4}L{2}U{2}",
       ttl: 60,
     });
@@ -63,20 +63,20 @@ describe("LessOtp", () => {
   });
 
   it("should not verify an OTP if the hash is tampered with", async () => {
-    const { otp, hash } = await lessOtp.gen(id, { template: "N{6}", ttl: 60 });
+    const { otp, hash } = lessOtp.gen(id, { template: "N{6}", ttl: 60 });
     const tamperedHash = hash.slice(0, -1) + "X"; // Slightly change the hash
     const isValid = lessOtp.verify(id, tamperedHash, otp);
     expect(isValid).toBe(false);
   });
 
   it("should generate a different OTP on each call", async () => {
-    const otp1 = await lessOtp.gen(id, { template: "N{6}", ttl: 60 });
-    const otp2 = await lessOtp.gen(id, { template: "N{6}", ttl: 60 });
+    const otp1 = lessOtp.gen(id, { template: "N{6}", ttl: 60 });
+    const otp2 = lessOtp.gen(id, { template: "N{6}", ttl: 60 });
     expect(otp1.otp).not.toBe(otp2.otp);
   });
 
   it("should reject verification if OTP is incorrect", async () => {
-    const { otp, hash } = await lessOtp.gen(id, { template: "N{6}", ttl: 60 });
+    const { otp, hash } = lessOtp.gen(id, { template: "N{6}", ttl: 60 });
     const isValid = lessOtp.verify(id, hash, otp.slice(0, -1) + "9"); // Modify OTP slightly
     expect(isValid).toBe(false);
   });
