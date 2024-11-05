@@ -172,6 +172,89 @@ const isValid = otp.verify("user@example.com", hash, "832-059");
 console.log("Is OTP valid?", isValid);
 ```
 
+### Example of use with Express.js
+
+```javascript
+const express = require("express");
+const LessOtp = require("less-otp");
+
+const PORT = 3000;
+
+const app = express();
+const auth = new LessOtp({
+  // options
+});
+
+app.use(express.json());
+
+// Request OTP endpoint
+app.post("/request-otp", async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ error: "Email is required" });
+  }
+
+  try {
+    const { otp, hash } = auth.gen(email, {
+      template: "N{3}-N{3}", // 912-753
+      ttl: 300, // 5 min
+    });
+
+    // Example of sending via Nodemailer
+    const transporter = createTransport({
+      service: "Gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: "youraddress@gmail.com",
+        pass: "yourpassword",
+      },
+    });
+
+    const mailOptions = {
+      from: "youraddress@gmail.com",
+      to: email,
+      subject: "OTP Code",
+      text: `Your OTP code is: ${otp}`,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log(info);
+
+    // Return hash in response
+    res.json({ hash });
+  } catch (error) {
+    console.error("Error generating OTP:", error);
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
+
+// Verify OTP endpoint
+app.post("/verify-otp", (req, res) => {
+  const { email, otp, hash } = req.body;
+
+  if (!email || !otp || !hash) {
+    res.status(400).json({ error: "Email, OTP, and hash are required" });
+    return;
+  }
+
+  const isValid = auth.verify(email, hash, otp);
+
+  if (!isValid) {
+    res.status(401).json({ error: "Invalid OTP or OTP has expired" });
+    return;
+  }
+
+  res.json({ message: "OTP verified successfully" });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on ${PORT}`);
+});
+```
+
 ## Changelog
 
 ### [0.0.5] - 2024-11-05

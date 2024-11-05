@@ -86,10 +86,10 @@ class LessOtp {
    * @param {GenerateOptions} options - Options for OTP generation.
    * @returns {Object} - OTP and hash.
    */
-  public async gen(
+  public gen(
     id: string,
     options: GenerateOptions = {}
-  ): Promise<{ otp: string; hash: string }> {
+  ): { otp: string; hash: string } {
     const template = options.template || DEFAULT_TEMPLATE;
 
     const otp = generateOtp(template);
