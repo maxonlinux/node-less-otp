@@ -1,6 +1,6 @@
 # node-less-otp
 
-A super lightweight Node.js stateless authentication library for generating and verifying one-time passwords (OTPs) without the database interaction and additional dependencies. TS is fully supported out of the box.
+A lightweight Node.js stateless authentication library for generating and verifying one-time passwords (OTPs) without the database interaction and additional dependencies. TS is fully supported out of the box.
 
 ## Table of Contents
 
